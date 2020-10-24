@@ -2,6 +2,7 @@ const path = require('path');
 const { app, remote } = require('electron');
 const winapi = require('winapi-bindings');
 const { fs, util } = require('vortex-api');
+const xdgBasedir = require('xdg-basedir');
 
 const appUni = app || remote.app;
 
@@ -17,7 +18,11 @@ const extension =  process.platform == 'linux'
     : '.exe';
 
 function modPath() {
-  return path.join(appUni.getPath('documents'), 'My Games', 'runic games', 'torchlight 2', 'mods');
+  if (process.platform == 'linux') {
+    return path.join(xdgBasedir.data, 'Runic Games', 'Torchlight 2', 'mods');
+  } else {
+    return path.join(appUni.getPath('documents'), 'My Games', 'runic games', 'torchlight 2', 'mods');
+  }
 }
 
 function findGame() {

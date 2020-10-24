@@ -1,6 +1,7 @@
 const { remote } = require('electron');
 const { fs, log, util } = require('vortex-api');
 const path = require('path');
+const xdgBasedir = require('xdg-basedir');
 
 const executable =  process.platform == 'linux'
     ? 'Grimrock.bin.x86'
@@ -12,7 +13,11 @@ function findGame() {
 }
 
 function modPath() {
-  return path.join(remote.app.getPath('documents'), 'Almost Human', 'Legend of Grimrock', 'Dungeons');
+  if (process.platform == 'linux') {
+    return path.join(xdgBasedir.data, 'Almost Human', 'Legend of Grimrock', 'Dungeons');
+  } else {
+    return path.join(remote.app.getPath('documents'), 'Almost Human', 'Legend of Grimrock', 'Dungeons');
+  }
 }
 
 function prepareForModding() {

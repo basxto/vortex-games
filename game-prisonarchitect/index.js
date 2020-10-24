@@ -10,12 +10,17 @@ const executable =  process.platform == 'linux'
 
 const appUni = remote !== undefined ? remote.app : app;
 
-const MODS_LOCAL = path.resolve(appUni.getPath('appData'),
-  '..', 'Local', 'Introversion', 'Prison Architect', 'mods');
-
 const GAME_ID = 'prisonarchitect';
 const STEAM_ID = 233450;
 const STEAM_DLL = 'steam_api64.dll';
+
+function modPath() {
+  if (process.platform == 'linux') {
+    return path.join(appUni.getPath('home'), '.Prison Architect', 'mods');
+  } else {
+    return path.resolve(appUni.getPath('appData'), '..', 'Local', 'Introversion', 'Prison Architect', 'mods');
+  }
+}
 
 function requiresLauncher(gamePath) {
   return fs.readdirAsync(gamePath)
@@ -42,7 +47,7 @@ function findGame() {
 }
 
 function setup(discovery) {
-  return fs.ensureDirWritableAsync(MODS_LOCAL, () => Promise.resolve());
+  return fs.ensureDirWritableAsync(modPath(), () => Promise.resolve());
 }
 
 function main(context) {
@@ -53,7 +58,7 @@ function main(context) {
       logo: 'gameart.jpg',
       mergeMods: true,
       queryPath: findGame,
-      queryModPath: () => MODS_LOCAL,
+      queryModPath: () => modPath(),
       //requiresLauncher,
       executable: () => executable,
       requiredFiles: [executable],
